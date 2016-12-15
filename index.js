@@ -2,16 +2,9 @@ var express = require('express');
 var request = require("request");
 var app = express();
 
+var port = process.env.PORT || 8080;
+
 app.get('/', function (req, res) {
-    var options = {
-        host: 'speiseplan.kochwerk-hamburg.de',
-        port: 80,
-        path: '/home/kochwerk-alster.html',
-        method: 'GET'
-    };
-
-    console.log("Sending request");
-
     var kochwerkUrl = "http://speiseplan.kochwerk-hamburg.de/home/kochwerk-alster.html";
     var twisterRegex = /twister/i;
 
@@ -28,7 +21,7 @@ app.get('/', function (req, res) {
     });
 });
 
-app.listen(3000, function () {
-    console.log('Example app listening on port 3000!');
+app.listen(port, function () {
+    console.log('Example app listening on port ' + port);
 });
 
