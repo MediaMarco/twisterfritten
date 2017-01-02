@@ -1,5 +1,8 @@
+"use strict";
+
 const express = require('express');
 const request = require("request");
+const jsdom = require("jsdom");
 const app = express();
 
 const port = process.env.PORT || 8080;
@@ -38,21 +41,30 @@ app.get('/', function (req, res) {
     }
 
     function collectResponses(url, res, body) {
-        responseCounter++;
-        const match = !!(body.match(twisterRegex));
-        if (match) {
-            where = `${where}<a href="${url}">${url}</a><br />`;
-        }
-        globalMatch = globalMatch || match;
-        if (responseCounter == Object.keys(kochwerkUrls).length) {
-            const frittenResponse = globalMatch ? "<h1>JA</h1>" : "<h1>NEIN</h1>\n";
 
-            if (globalMatch) {
-                where = `<h4>Wo?<br />${where}</h4>`;
+        let visibleMeals = "";
+        const today = new Date().getDay();
+        jsdom.env(body, function (err, window) {
+            responseCounter++;
+            visibleMeals = window.document.getElementById("day_" + today).textContent;
+            const match = !!(visibleMeals.match(twisterRegex));
+            if (match) {
+                where = `${where}<a href="${url}">${url}</a><br />`;
             }
+            globalMatch = globalMatch || match;
+            if (responseCounter == Object.keys(kochwerkUrls).length) {
+                const frittenResponse = globalMatch ? "<h1>JA</h1>" : "<h1>NEIN</h1>\n";
 
-            res.render('index', {title: 'Gibt\'s heute Twisterfritten?', message: headline + frittenResponse + where});
-        }
+                if (globalMatch) {
+                    where = `<h4>Wo?<br />${where}</h4>`;
+                }
+
+                res.render('index', {
+                    title: 'Gibt\'s heute Twisterfritten?',
+                    message: headline + frittenResponse + where
+                });
+            }
+        });
     }
 });
 
