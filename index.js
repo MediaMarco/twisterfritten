@@ -15,6 +15,7 @@ const kochwerkUrls = {
 
 const headline = "<h3>Gibt's heute Twisterfritten?</h3>\n";
 const twisterRegex = /twister/i;
+const weekDays = ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'];
 
 app.use(express.static('public'));
 app.set('view engine', 'pug');
@@ -22,8 +23,9 @@ app.set('view engine', 'pug');
 app.get('/', function (req, res) {
 
     let responseCounter = 0;
-    let where = "";
-    let globalMatch = false;
+    let globalMatch = new Array(5);
+    let frittenResponse = new Array(5);
+    let where = new Array(5);
 
     for (let key in kochwerkUrls) {
         doRequest(key);
@@ -32,7 +34,7 @@ app.get('/', function (req, res) {
     function doRequest(key) {
         const callback = function (error, response, body) {
             if (!error && response.statusCode == 200) {
-                collectResponses(kochwerkUrls[key], res, body);
+                collectResponse(kochwerkUrls[key], res, body);
             } else {
                 res.error(error);
             }
@@ -40,31 +42,45 @@ app.get('/', function (req, res) {
         request(kochwerkUrls[key], callback);
     }
 
-    function collectResponses(url, res, body) {
-
-        let visibleMeals = "";
+    function collectResponse(url, res, body) {
         const today = new Date().getDay();
         jsdom.env(body, function (err, window) {
-            responseCounter++;
-            visibleMeals = window.document.getElementById("day_" + today).textContent;
-            const match = !!(visibleMeals.match(twisterRegex));
-            if (match) {
-                where = `${where}<a href="${url}">${url}</a><br />`;
-            }
-            globalMatch = globalMatch || match;
-            if (responseCounter == Object.keys(kochwerkUrls).length) {
-                const frittenResponse = globalMatch ? "<h1>JA</h1>" : "<h1>NEIN</h1>\n";
-
-                if (globalMatch) {
-                    where = `<h4>Wo?<br />${where}</h4>`;
+                responseCounter++;
+                for (let day = 1; day <= 5; day++) {
+                    let visibleMeals = window.document.getElementById("day_" + day).textContent;
+                    const match = !!(visibleMeals.match(twisterRegex));
+                    if (match) {
+                        where[day] = `${!!where[day] ? where[day] : ""}<a href="${url}">${url}</a><br />`;
+                    }
+                    globalMatch[day] = globalMatch[day] || match;
                 }
 
-                res.render('index', {
-                    title: 'Gibt\'s heute Twisterfritten?',
-                    message: headline + frittenResponse + where
-                });
+
+                if (responseCounter == Object.keys(kochwerkUrls).length) {
+                    frittenResponse[today] = globalMatch[today] ? "<h1>JA</h1>" : "<h1>NEIN</h1>\n";
+
+                    if (globalMatch[today]) {
+                        where[today] = `<h4>Wo?<br />${where[today]}</h4>`;
+                    }
+                    let message = headline + frittenResponse[today];
+                    if (!!where[today]) {
+                        message += where[today];
+                    }
+
+                    if (!globalMatch[today]) {
+                        for (let day = today + 1; day <= 5; day++) {
+                            if (globalMatch[day]) {
+                                message += "<p>Aber am " + weekDays[day] + " hier:<br/> " + where[day] + "</p>";
+                            }
+                        }
+                    }
+                    res.render('index', {
+                        title: 'Gibt\'s heute Twisterfritten?',
+                        message: message
+                    });
+                }
             }
-        });
+        );
     }
 });
 
