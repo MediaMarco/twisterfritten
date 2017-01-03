@@ -13,7 +13,7 @@ const kochwerkUrls = {
     bonprix: "http://speiseplan.kochwerk-hamburg.de/home/bon-prix.html"
 };
 
-const headline = "<h3>Gibt's heute Twisterfritten?</h3>\n";
+const headline = "<h6>Gibt's heute Twisterfritten?</h6>\n";
 const twisterRegex = /twister/i;
 const weekDays = ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'];
 
@@ -76,7 +76,8 @@ app.get('/', function (req, res) {
                     }
                     res.render('index', {
                         title: 'Gibt\'s heute Twisterfritten?',
-                        message: message
+                        message: message,
+                        theme: req.query.theme
                     });
                 }
             }
