@@ -60,7 +60,7 @@ app.get('/', function (req, res) {
                     frittenResponse[today] = globalMatch[today] ? "<h1>JA</h1>" : "<h1>NEIN</h1>\n";
 
                     if (globalMatch[today]) {
-                        where[today] = `<h4>Wo?<br />${where[today]}</h4>`;
+                        where[today] = `<p>Wo? ${where[today]}</p>`;
                     }
                     let message = headline + frittenResponse[today];
                     if (!!where[today]) {
