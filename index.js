@@ -50,7 +50,7 @@ app.get('/', function (req, res) {
                     let visibleMeals = window.document.getElementById("day_" + day).textContent;
                     const match = !!(visibleMeals.match(twisterRegex));
                     if (match) {
-                        where[day] = `${!!where[day] ? where[day] : ""}<a href="${url}">${url}</a><br />`;
+                        where[day] = `${!!where[day] ? where[day] : ""}<a href="${url}" target="_blank">${url}</a><br />`;
                     }
                     globalMatch[day] = globalMatch[day] || match;
                 }
