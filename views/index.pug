@@ -2,12 +2,10 @@ html
   head
     link(rel='stylesheet', href='/css/normalize.css')
     link(rel='stylesheet', href='/css/skeleton.css')
-
-    if (theme=='dark')
-      link(rel='stylesheet', href='/css/dark.css')
-
     if (heute=='yes')
       link(rel='stylesheet', href='/css/rainbow.css')
+    else if (theme=='dark')
+      link(rel='stylesheet', href='/css/dark.css')
 
     title!= title
   body
