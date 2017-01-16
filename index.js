@@ -44,11 +44,11 @@ app.get('/', function (req, res) {
     }
 
     function collectResponse(url, res, body) {
-        const today = new Date().getDay();
-
         const now = new Date();
         now.setTimezone("Europe/Berlin");
+        const today = now.getDay();
         const hour = now.getHours();
+
         const blink = hour >= 9 && hour <= 13;
 
         jsdom.env(body, function (err, window) {
