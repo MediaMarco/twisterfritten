@@ -14,7 +14,6 @@ const kochwerkUrls = {
     bonprix: "http://speiseplan.kochwerk-hamburg.de/home/bon-prix.html"
 };
 
-const headline = "<h6>Gibt's heute Twisterfritten?</h6>\n";
 const twisterRegex = /twister/i;
 const weekDays = ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'];
 
@@ -50,6 +49,7 @@ app.get('/', function (req, res) {
         const hour = now.getHours();
 
         const blink = hour >= 9 && hour <= 13;
+        const question = hour >= 14 ? 'Gab\'s heute Twisterfritten?' : 'Gibt\'s heute Twisterfritten?';
 
         jsdom.env(body, function (err, window) {
                 responseCounter++;
@@ -64,6 +64,9 @@ app.get('/', function (req, res) {
 
 
                 if (responseCounter == Object.keys(kochwerkUrls).length) {
+
+                    const headline = "<h6>" + question + "</h6>\n";
+
                     frittenResponse[today] = globalMatch[today] ? "<h1>JA</h1>" : "<h1>NEIN</h1>\n";
 
                     if (globalMatch[today]) {
@@ -82,7 +85,7 @@ app.get('/', function (req, res) {
                         }
                     }
                     res.render('index', {
-                        title: hour >= 14 ? 'Gab\'s heute Twisterfritten?' : 'Gibt\'s heute Twisterfritten?',
+                        title: question,
                         message: message,
                         theme: req.query.theme,
                         heute: globalMatch[today] && blink
