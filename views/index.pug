@@ -2,11 +2,11 @@ html
   head
     link(rel='stylesheet', href='/css/normalize.css')
     link(rel='stylesheet', href='/css/skeleton.css')
-    if (heute=='yes')
-      link(rel='stylesheet', href='/css/rainbow.css')
-    else if (theme=='dark')
+    if (theme == 'dark')
       link(rel='stylesheet', href='/css/dark.css')
+    if (heute)
+      link(rel='stylesheet', href='/css/rainbow.css')
 
     title!= title
   body
-    div!= message
+    div(class=heute ? 'rainbow' : '')!= message
