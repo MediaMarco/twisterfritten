@@ -77,7 +77,8 @@ app.get('/', function (req, res) {
                     res.render('index', {
                         title: 'Gibt\'s heute Twisterfritten?',
                         message: message,
-                        theme: req.query.theme
+                        theme: req.query.theme,
+                        heute: globalMatch[today] ? 'yes' : 'no'
                     });
                 }
             }
