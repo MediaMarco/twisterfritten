@@ -83,7 +83,7 @@ app.get('/', function (req, res) {
                     }
                     res.render('index', {
                         title: 'Gibt\'s heute Twisterfritten?',
-                        message: message + " Hour: " + hour,
+                        message: message,
                         theme: req.query.theme,
                         heute: globalMatch[today] && blink
                     });
