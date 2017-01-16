@@ -2,6 +2,7 @@
 
 const express = require('express');
 const request = require("request");
+const time = require('time')(Date);
 const jsdom = require("jsdom");
 const app = express();
 
@@ -44,6 +45,12 @@ app.get('/', function (req, res) {
 
     function collectResponse(url, res, body) {
         const today = new Date().getDay();
+
+        const now = new Date();
+        now.setTimezone("Europe/Berlin");
+        const hour = now.getHours();
+        const blink = hour >= 9 && hour <= 13;
+
         jsdom.env(body, function (err, window) {
                 responseCounter++;
                 for (let day = 1; day <= 5; day++) {
@@ -76,9 +83,9 @@ app.get('/', function (req, res) {
                     }
                     res.render('index', {
                         title: 'Gibt\'s heute Twisterfritten?',
-                        message: message,
+                        message: message + " Hour: " + hour,
                         theme: req.query.theme,
-                        heute: globalMatch[today]
+                        heute: globalMatch[today] && blink
                     });
                 }
             }
