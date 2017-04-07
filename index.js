@@ -54,6 +54,10 @@ app.get('/', function (req, res) {
         jsdom.env(body, function (err, window) {
                 responseCounter++;
                 for (let day = 1; day <= 5; day++) {
+                    let element = window.document.getElementById("day_" + day);
+                    if (element === null) {
+                        continue;
+                    }
                     let visibleMeals = window.document.getElementById("day_" + day).textContent;
                     const match = !!(visibleMeals.match(twisterRegex));
                     if (match) {
@@ -62,8 +66,7 @@ app.get('/', function (req, res) {
                     globalMatch[day] = globalMatch[day] || match;
                 }
 
-
-                if (responseCounter == Object.keys(kochwerkUrls).length) {
+                if (responseCounter === Object.keys(kochwerkUrls).length) {
 
                     const headline = "<h6>" + question + "</h6>\n";
 
