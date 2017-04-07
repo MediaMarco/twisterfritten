@@ -26,6 +26,7 @@ app.get('/', function (req, res) {
     let globalMatch = new Array(5);
     let frittenResponse = new Array(5);
     let where = new Array(5);
+    let errorMessages = "";
 
     for (let key in kochwerkUrls) {
         doRequest(key);
@@ -53,10 +54,12 @@ app.get('/', function (req, res) {
 
         jsdom.env(body, function (err, window) {
                 responseCounter++;
+
                 for (let day = 1; day <= 5; day++) {
                     let element = window.document.getElementById("day_" + day);
                     if (element === null) {
-                        continue;
+                        errorMessages += `Leider ist der Speiseplan vom Kochwerk (<a href="${url}" target="_blank">${url}</a>) zur Zeit nicht gepflegt.<br>`;
+                        break;
                     }
                     let visibleMeals = window.document.getElementById("day_" + day).textContent;
                     const match = !!(visibleMeals.match(twisterRegex));
@@ -87,6 +90,11 @@ app.get('/', function (req, res) {
                             }
                         }
                     }
+
+                    if (errorMessages !== "") {
+                        message = errorMessages;
+                    }
+
                     res.render('index', {
                         title: question,
                         message: message,
