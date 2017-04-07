@@ -50,7 +50,7 @@ app.get('/', function (req, res) {
         const hour = now.getHours();
 
         const blink = hour >= 9 && hour <= 13;
-        const question = hour >= 14 ? 'Gab\'s heute Twisterfritten?' : 'Gibt\'s heute Twisterfritten?';
+        let question = hour >= 14 ? 'Gab\'s heute Twisterfritten?' : 'Gibt\'s heute Twisterfritten?';
 
         jsdom.env(body, function (err, window) {
                 responseCounter++;
@@ -92,7 +92,8 @@ app.get('/', function (req, res) {
                     }
 
                     if (errorMessages !== "") {
-                        message = errorMessages;
+                        message = "<h3>Twister Panic</h3>" + errorMessages;
+                        question = "Twister Panic";
                     }
 
                     res.render('index', {
